@@ -103,6 +103,7 @@ animator.addAnimations { [weak self] in
 - The Start button starts the animation using `animator.startAnimation(afterDelay: 0.3)`.
 - Before starting, the animator's state is checked to make sure it is `.inactive`.
 - This prevents attempting to start an animator that has already been started or paused.
+- Action method - `startAnimation()`
 ```
 if animator.state == .inactive {
     animator.startAnimation(afterDelay: 0.3)
@@ -112,6 +113,7 @@ if animator.state == .inactive {
 ### Pause Animation
 - The Pause button pauses the animation only when the animator is currently running.
 - `pauseAnimation()` preserves the current animation progress, allowing it to be continued later.
+- Action method - `pauseAnimation()`
 ```
 if animator.isRunning {
     animator.pauseAnimation()
@@ -120,6 +122,7 @@ if animator.isRunning {
 ### Resume Animation
 - The Resume button continues the animation from its current position.
 - `continueAnimation(withTimingParameters: UICubicTimingParameters(animationCurve: .easeInOut), durationFactor: 0.5)` is used to resume the paused animation with an `.easeInOut` timing curve.
+- Action method - `resumeAnimation()`
 
 ### Reverse Animation
 - The Reverse button toggles the `isReversed` property of the animator.
@@ -127,6 +130,7 @@ if animator.isRunning {
 ```
 animator.isReversed.toggle()
 ```
+- Action method - `reverseAnimation()`
 
 ### Interactive Gesture Control
 - In addition to the button controls, a UIPanGestureRecognizer is added to make the animation interactively controllable through a horizontal swipe.
