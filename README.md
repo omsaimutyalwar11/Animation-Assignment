@@ -31,6 +31,8 @@ UIView.animate(
     self?.view.layoutIfNeeded()
 }
 ```
+## Result
+- When the Animate button is tapped, the square view goes to upside with increasing size and after tapping again the square view come back to it original size and position.
 
 # Assignment 2 – Bouncing ball animation using CAKeyframeAnimation
 
