@@ -67,5 +67,85 @@ ballLayer.add(animation, forKey: "bounce")
 ## Result
 - When the Animate button is tapped, the ball follows the predefined curved path, performs multiple bounces with gradually decreasing heights, and finally returns to its original position with a smooth settling effect.
 
+# Assignment 3 – Animate a view using UIViewPropertyAnimator.
 
+## Problem Statement
+Create a view and animate it using UIViewPropertyAnimator. Add controls to start, pause, resume and reverse the animation. The animation should be controllable while it is running.
 
+## Implementation
+
+- Created a `createButton(title: String)` utility method to configure and create `UIButton` instances.
+- Created four control buttons using the utility method:
+  - `startButton`
+  - `pauseButton`
+  - `resumeButton`
+  - `reverseButton`
+- Added all four buttons to a horizontal `UIStackView` named `buttonView` and positioned the stack view using Auto Layout constraints.
+- Created a `squareView` with an initial frame and added it to the view hierarchy.
+- Created a `UIViewPropertyAnimator` with a duration of `5.0` seconds and a damping ratio of `0.5`:
+```
+  let animator = UIViewPropertyAnimator(duration: 5.0, dampingRatio: 0.5)
+```
+- Added the required below animations to the property animator:
+    - Moves the squareView vertically by 450 points.
+    - Changes the square's background color from red to system blue.
+```
+animator.addAnimations { [weak self] in
+    guard let self else {
+        return
+    }
+
+    self.squareView.center.y += 450
+    self.squareView.backgroundColor = .systemBlue
+}
+```
+### Start Animation
+- The Start button starts the animation using `animator.startAnimation(afterDelay: 0.3)`.
+- Before starting, the animator's state is checked to make sure it is `.inactive`.
+- This prevents attempting to start an animator that has already been started or paused.
+```
+if animator.state == .inactive {
+    animator.startAnimation(afterDelay: 0.3)
+}
+```
+
+### Pause Animation
+- The Pause button pauses the animation only when the animator is currently running.
+- `pauseAnimation()` preserves the current animation progress, allowing it to be continued later.
+```
+if animator.isRunning {
+    animator.pauseAnimation()
+}
+```
+### Resume Animation
+- The Resume button continues the animation from its current position.
+- `continueAnimation(withTimingParameters: UICubicTimingParameters(animationCurve: .easeInOut), durationFactor: 0.5)` is used to resume the paused animation with an `.easeInOut` timing curve.
+
+### Reverse Animation
+- The Reverse button toggles the `isReversed` property of the animator.
+- This allows the animation to play in the opposite direction from its current state.
+```
+animator.isReversed.toggle()
+```
+
+### Interactive Gesture Control
+- In addition to the button controls, a UIPanGestureRecognizer is added to make the animation interactively controllable through a horizontal swipe.
+- Created a separate `UIViewPropertyAnimator` named `horizontalAnimator` for controlling the horizontal movement of the square.
+- When the pan gesture begins:
+    - The swipe velocity is checked to determine the direction.
+    - The square is configured to move horizontally by 100 points in the swipe direction.
+    - The animator is started and immediately paused so that its progress can be controlled manually.
+- While the gesture changes:
+    - The horizontal translation is converted into a fractional progress value.
+    - The animator's fractionComplete is updated based on the swipe distance.
+```
+let progress = translation.x / view.bounds.width
+horizontalAnimator?.fractionComplete = progress
+```
+- When the gesture ends or is cancelled, the animator continues from its current progress.
+```
+horizontalAnimator?.continueAnimation(
+    withTimingParameters: nil,
+    durationFactor: 0
+)
+```
