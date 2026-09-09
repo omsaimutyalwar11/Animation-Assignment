@@ -1,65 +1,32 @@
 # Task 4 Documentation
 
 # Assignment 1 – Square View Animation
+
 ## Problem Statement
- Create a square view and an Animate button. When the button is tapped, use UIView.animate to
- move the square to a new position and increase its size. When the button is tapped again,
- animate the square back to its original position and size. Use parameters such as duration, delay
- and animation curve to configure the animation.
+
+Create a square view and an **Animate** button. When the button is tapped, use `UIView.animate` to move the square to a new position and increase its size. When tapped again, animate it back to its original position and size. Configure the animation using parameters such as duration, delay, and animation curve.
 
 ## Implementation
 
-- Used `isExpanded` property to track the current state of the square view whether it is expanded or collapsed. Each button tap toggles its value to switch between the two states.
-`private var isExpanded = false`
-- Two constraints are stored and modified during animation. 
-    - `private var topConstraint: NSLayoutConstraint!` controls the square's vertical position.
-    - `private var widthConstraint: NSLayoutConstraint!` controls its width.
-    - Height is constrained equal to width, keeping it square.
-
-- Initial state:
-```text
-Position: 400 pt from top
-Size: 50 × 50 pt
-```
-- Expanded state:
-
-```text
-Position: 20 pt from top
-Size: 200 × 200 pt
-```
-
-### 3. Button Action
-
-`performAction()` toggles the state and updates the constraint constants:
-
-```swift
-isExpanded.toggle()
-
-topConstraint.constant = isExpanded ? 20 : 400
-widthConstraint.constant = isExpanded ? 200 : 50
-```
-
-### 4. Animation
-
-The constraint changes are animated using:
+- Created a `squareView` and an `animateButton` and added them to the view hierarchy with the required Auto Layout constraints.
+- Added an `isExpanded` property to keep track of the square's expanded and collapsed states.
+- Stored the `topConstraint` and `widthConstraint` as properties because their constants need to be modified during the animation.
+- Added a height constraint equal to the square's width to maintain its square shape.
+- Created the `performAction` method, which is called when the **Animate** button is tapped.
+- Inside `performAction`, the `isExpanded` state is toggled:
+  - When `isExpanded` is `true`, the top constraint is changed to `20` and the width constraint to `200`. This moves the square towards the top and increases its size.
+  - When `isExpanded` is `false`, the top constraint is changed back to `400` and the width constraint to `50`. This returns the square to its original position and size.
+- Used `UIView.animate` to animate the constraint changes with:
+  - **Duration:** `0.5` seconds
+  - **Delay:** `0.5` seconds
+  - **Animation Curve:** `.curveEaseInOut`
+- Called `layoutIfNeeded()` inside the animation block to animate the Auto Layout constraint changes smoothly.
 
 ```swift
 UIView.animate(
-    withDuration: 1,
+    withDuration: 0.5,
     delay: 0.5,
     options: [.curveEaseInOut]
-) {
-    self.view.layoutIfNeeded()
+) { [weak self] in
+    self?.view.layoutIfNeeded()
 }
-```
-
-* **Duration:** 1 second
-* **Delay:** 0.5 seconds
-* **Curve:** `curveEaseInOut`
-* `layoutIfNeeded()` applies the updated constraints within the animation.
-
-
-## Result
-
-The first tap moves and enlarges the square, while the second tap moves and shrinks it back to its original state. The animation is smooth and respects the user's Reduce Motion accessibility preference.
-
